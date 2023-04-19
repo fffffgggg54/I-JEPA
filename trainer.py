@@ -161,9 +161,9 @@ def create_dir(dir):
 def getData():
     startTime = time.time()
 
-    #trainSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'train')
-    #testSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'val')
-    
+    trainSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'train')
+    testSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'val')
+    '''
     trainSet = timm.data.create_dataset(
         '', 
         root=FLAGS['imageRoot'], 
@@ -178,11 +178,11 @@ def getData():
         split = 'validation', 
         batch_size=FLAGS['batch_size']
     )
-
+    '''
     global classes
-    #classes = {classIndex : className for classIndex, className in enumerate(trainSet.classes)}
+    classes = {classIndex : className for classIndex, className in enumerate(trainSet.classes)}
     
-    classes = trainSet.reader.class_to_idx
+    #classes = trainSet.reader.class_to_idx
     
     image_datasets = {'train': trainSet, 'val' : testSet}   # put dataset into a list for easy handling
     return image_datasets
