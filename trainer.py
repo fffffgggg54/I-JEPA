@@ -163,11 +163,13 @@ def getData():
     #trainSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'train')
     #testSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'val')
     
-    trainSet = timm.data.create_dataset('all', root=FLAGS['imageRoot'], split = 'train', batch_size=FLAGS['batch_size'])
-    testSet = timm.data.create_dataset('all', root=FLAGS['imageRoot'], split = 'validation', batch_size=FLAGS['batch_size'])
+    trainSet = timm.data.create_dataset('', root=FLAGS['imageRoot'], split = 'train', batch_size=FLAGS['batch_size'])
+    testSet = timm.data.create_dataset('', root=FLAGS['imageRoot'], split = 'validation', batch_size=FLAGS['batch_size'])
 
     global classes
-    classes = {classIndex : className for classIndex, className in enumerate(trainSet.classes)}
+    #classes = {classIndex : className for classIndex, className in enumerate(trainSet.classes)}
+    
+    classes = trainSet.reader.class_to_idx
     
     image_datasets = {'train': trainSet, 'val' : testSet}   # put dataset into a list for easy handling
     return image_datasets
