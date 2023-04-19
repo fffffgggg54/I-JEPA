@@ -143,36 +143,57 @@ class I_JEPA(nn.Module):
         
     def forward(self, x):
         
+        torch.cuda.mem_get_info()
+        
         in_shape = x.shape
+        
+        # target encoder output
         target_unmasked = self.target_encoder(x)
+        
+        # handle target output output size differences between models
+        # TODO get this whole thing to run in BCHW, will allow faithful repro, probably
         if len(target_unmasked.shape) == 4:
             target_unmasked = target_unmasked.flatten(2).transpose(1, 2)  # BCHW -> BNC
         
         
+        torch.cuda.mem_get_info()
         
+        # mask generation
         B, N, C = target_unmasked.shape
         context_mask, target_masks = get_masks(
             target_unmasked.shape, 
             num_targets_per_sample=self.num_targets_per_sample,
             target_size = self.target_size
         )
-    
+        
+        torch.cuda.mem_get_info()
+        
+        # masking
         target_unmasked = target_unmasked.reshape(B, 1, N, C)
         target_masks = target_masks.reshape(B, self.num_targets_per_sample, N, 1).to(x.device)
         targets = target_unmasked * target_masks
         
+        torch.cuda.mem_get_info()
+        
         #[B, num_targets, N, C]
         
         context_mask = F.interpolate(context_mask.float().to(x.device), (in_shape[-2], in_shape[-1]))
-        
         context_enc_input = x * context_mask
         
+        torch.cuda.mem_get_info()
+        
+        # context encoding and output size handling
+        # TODO BCHW
+        # TODO don't forward masked portions
         context_enc_output = self.context_encoder(context_enc_input)
         if len(context_enc_output.shape) == 4:
             context_enc_output = context_enc_output.flatten(2).transpose(1, 2)  # BCHW -> BNC
+            
+        torch.cuda.mem_get_info()
         
         contexts = []
         for target_mask in target_masks.transpose(0,1):
+            torch.cuda.mem_get_info()
             mask_shape = target_mask.shape
             new_mask = target_mask.reshape(mask_shape[0], mask_shape[1], 1)
             
@@ -182,12 +203,16 @@ class I_JEPA(nn.Module):
             
             # add prediction masks to tokens corresponding to each target mask in the encoded context
             context = context_enc_output + new_mask * (self.mask_token + self.mask_pe)
-        
+            torch.cuda.mem_get_info()
             context = new_mask * self.predictor(context)
+            torch.cuda.mem_get_info()
             contexts.append(context)
+            torch.cuda.mem_get_info()
         
         contexts = torch.stack(contexts).transpose(0,1)
+        torch.cuda.mem_get_info()
         targets = self.proj(targets)
+        torch.cuda.mem_get_info()
             
         return targets, contexts
         
