@@ -68,7 +68,7 @@ FLAGS = {}
 # TODO replace string appending with os.path.join()
 
 FLAGS['rootPath'] = "/media/fredo/SAMSUNG_500GB/imagenet/"
-FLAGS['imageRoot'] = FLAGS['rootPath'] + 'data/'
+FLAGS['imageRoot'] = FLAGS['rootPath'] + ''
 
 FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_base_patch16_224/'
 
