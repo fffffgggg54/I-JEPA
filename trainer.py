@@ -243,7 +243,7 @@ def modelSetup(classes):
     
     # initialize jepa params
     with torch.no_grad():
-        in_tensor = torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device)
+        in_tensor = torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'])
         out_tensor = model(in_tensor)
         del in_tensor
         del out_tensor
