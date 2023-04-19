@@ -1,5 +1,6 @@
 import torch
 import torch.cuda.amp
+import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.parallel
 from torch.nn.parallel import DistributedDataParallel as DDP
