@@ -421,7 +421,7 @@ def trainCycle(image_datasets, model):
                 print("training set")
                 
                 
-            if FLAGS['val'] == False and is_head_proc:
+            if phase == 'val' and FLAGS['val'] == False and is_head_proc:
                 modelDir = create_dir(FLAGS['modelDir'])
                 state_dict = model.state_dict()
                     
