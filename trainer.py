@@ -241,13 +241,7 @@ def modelSetup(classes):
     model = I_JEPA(model)
     
     
-    # initialize jepa params
-    with torch.no_grad():
-        in_tensor = torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'])
-        out_tensor = model(in_tensor)
-        del in_tensor
-        del out_tensor
-        torch.cuda.empty_cache()
+    
 
     
     #model = ml_decoder.add_ml_decoder_head(model)
@@ -312,6 +306,13 @@ def trainCycle(image_datasets, model):
     
     model = model.to(device, memory_format=memory_format)
     
+    # initialize jepa params
+    with torch.no_grad():
+        in_tensor = torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device)
+        out_tensor = model(in_tensor)
+        del in_tensor
+        del out_tensor
+        torch.cuda.empty_cache()
     
     
     if (FLAGS['resume_epoch'] > 0) and is_head_proc:
