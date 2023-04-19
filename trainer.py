@@ -315,9 +315,19 @@ def trainCycle(image_datasets, model):
     if(FLAGS['compile_model'] == True):
         model = torch.compile(model)
         
+    if(is_head_proc): print(torch.cuda.mem_get_info())
     # initialize jepa params
     with torch.no_grad():
-        model(torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device))
+        in_tensor = torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device)
+        if(is_head_proc): print(torch.cuda.mem_get_info())
+        out_tensor = model(in_tensor)
+        if(is_head_proc): print(torch.cuda.mem_get_info())
+        del in_tensor
+        if(is_head_proc): print(torch.cuda.mem_get_info())
+        del out_tensor
+        if(is_head_proc): print(torch.cuda.mem_get_info())
+        torch.cuda.empty_cache()
+        if(is_head_proc): print(torch.cuda.mem_get_info())
         
     if(is_head_proc): print(torch.cuda.mem_get_info())
     
