@@ -294,9 +294,7 @@ def trainCycle(image_datasets, model):
     
     model = model.to(device, memory_format=memory_format)
     
-    # initialize jepa params
-    with torch.no_grad():
-        model(torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device))
+    
     
     if (FLAGS['resume_epoch'] > 0) and is_head_proc:
         state_dict = torch.load(FLAGS['modelDir'] + 'saved_model_epoch_' + str(FLAGS['resume_epoch'] - 1) + '.pth', map_location=torch.device('cpu'))
@@ -317,8 +315,12 @@ def trainCycle(image_datasets, model):
     if(FLAGS['compile_model'] == True):
         model = torch.compile(model)
         
-
-
+    # initialize jepa params
+    with torch.no_grad():
+        model(torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device))
+        
+    if(is_head_proc): print(torch.cuda.mem_get_info())
+    
     if(is_head_proc): print("initialized training, time spent: " + str(time.time() - startTime))
 
 
@@ -451,7 +453,7 @@ def trainCycle(image_datasets, model):
                 imageBatch = images.to(device, memory_format=memory_format, non_blocking=True)
                 tagBatch = tags.to(device, non_blocking=True)
                 
-                
+                if(is_head_proc): print(torch.cuda.mem_get_info())
                 
                 with torch.set_grad_enabled(phase == 'train'):
                     with torch.cuda.amp.autocast(enabled=FLAGS['use_AMP']):
@@ -459,6 +461,7 @@ def trainCycle(image_datasets, model):
                         
                         
                         outputs = model(imageBatch)
+                        if(is_head_proc): print(torch.cuda.mem_get_info())
                         #outputs = model(imageBatch).logits
                         #if phase == 'val':
                         '''
