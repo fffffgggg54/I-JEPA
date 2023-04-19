@@ -314,7 +314,7 @@ def trainCycle(image_datasets, model):
     
     
     if (FLAGS['resume_epoch'] > 0) and is_head_proc:
-        state_dict = torch.load(FLAGS['modelDir'] + 'saved_model_epoch_' + str(FLAGS['resume_epoch'] - 1) + '.pth', map_location=model.device)
+        state_dict = torch.load(FLAGS['modelDir'] + 'saved_model_epoch_' + str(FLAGS['resume_epoch'] - 1) + '.pth', map_location=torch.device('cpu'))
         #out_dict={}
         #for k, v in state_dict.items():
         #    k = k.replace('_orig_mod.', '')
@@ -351,7 +351,7 @@ def trainCycle(image_datasets, model):
     #optimizer = optim.AdamW(model.parameters(), lr=FLAGS['learning_rate'], weight_decay=FLAGS['weight_decay'])
     optimizer = timm.optim.Adan(model.parameters(), lr=FLAGS['learning_rate'], weight_decay=FLAGS['weight_decay'])
     if (FLAGS['resume_epoch'] > 0):
-        optimizer.load_state_dict(torch.load(FLAGS['modelDir'] + 'optimizer' + '.pth', map_location = model.device))
+        optimizer.load_state_dict(torch.load(FLAGS['modelDir'] + 'optimizer' + '.pth', map_location=torch.device('cpu')))
     #scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=FLAGS['learning_rate'], steps_per_epoch=len(dataloaders['train']), epochs=FLAGS['num_epochs'], pct_start=FLAGS['lr_warmup_epochs']/FLAGS['num_epochs'])
     #scheduler.last_epoch = len(dataloaders['train'])*FLAGS['resume_epoch']
     
