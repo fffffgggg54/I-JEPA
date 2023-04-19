@@ -228,6 +228,8 @@ def modelSetup(classes):
     #model = timm.create_model('vit_base_patch16_224', pretrained=False, num_classes=0, drop_rate = 0.0, drop_path_rate = 0.2, global_pool='', class_token=False)
     model = I_JEPA(model)
     
+    
+    
 
     
     #model = ml_decoder.add_ml_decoder_head(model)
@@ -292,7 +294,9 @@ def trainCycle(image_datasets, model):
     
     model = model.to(device, memory_format=memory_format)
     
-    
+    # initialize jepa params
+    with torch.no_grad():
+        model(torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device))
     
     if (FLAGS['resume_epoch'] > 0) and is_head_proc:
         state_dict = torch.load(FLAGS['modelDir'] + 'saved_model_epoch_' + str(FLAGS['resume_epoch'] - 1) + '.pth', map_location=torch.device('cpu'))
@@ -313,9 +317,7 @@ def trainCycle(image_datasets, model):
     if(FLAGS['compile_model'] == True):
         model = torch.compile(model)
         
-    # initialize jepa params
-    with torch.no_grad():
-        model(torch.randn(FLAGS['batch_size'], 3, FLAGS['image_size'], FLAGS['image_size'], device=device))
+
 
     if(is_head_proc): print("initialized training, time spent: " + str(time.time() - startTime))
 
