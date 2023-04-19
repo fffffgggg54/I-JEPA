@@ -84,7 +84,7 @@ if(torch.has_mps == True): FLAGS['device2'] = "cpu"
 FLAGS['use_AMP'] = False
 FLAGS['use_ddp'] = True
 #FLAGS['use_scaler'] = FLAGS['use_AMP']
-FLAGS['use_scaler'] = True
+FLAGS['use_scaler'] = False
 #if(FLAGS['device'].type == 'cuda'): FLAGS['use_sclaer'] = True
 
 # dataloader config
@@ -119,6 +119,7 @@ FLAGS['interpolation'] = torchvision.transforms.InterpolationMode.BICUBIC
 FLAGS['image_size_initial'] = int(round(FLAGS['image_size'] // FLAGS['crop']))
 
 FLAGS['channels_last'] = False
+FLAGS['compile_model'] = False
 
 # debugging config
 
