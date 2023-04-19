@@ -329,7 +329,6 @@ def trainCycle(image_datasets, model):
         torch.cuda.empty_cache()
         if(is_head_proc): print(torch.cuda.mem_get_info())
         
-    if(is_head_proc): print(torch.cuda.mem_get_info())
     
     if(is_head_proc): print("initialized training, time spent: " + str(time.time() - startTime))
 
