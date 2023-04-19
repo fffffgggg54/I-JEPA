@@ -43,6 +43,7 @@ import random
 
 from i_jepa import I_JEPA
 
+
 torch.backends.cudnn.benchmark = True
 
 # The flag below controls whether to allow TF32 on matmul. This flag defaults to False
@@ -80,6 +81,7 @@ FLAGS['device'] = torch.device("cuda:0" if (torch.cuda.is_available() and FLAGS[
 FLAGS['device2'] = FLAGS['device']
 if(torch.has_mps == True): FLAGS['device2'] = "cpu"
 FLAGS['use_AMP'] = False
+FLAGS['use_ddp'] = True
 #FLAGS['use_scaler'] = FLAGS['use_AMP']
 FLAGS['use_scaler'] = True
 #if(FLAGS['device'].type == 'cuda'): FLAGS['use_sclaer'] = True
@@ -157,8 +159,11 @@ def create_dir(dir):
 def getData():
     startTime = time.time()
 
-    trainSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'train')
-    testSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'val')
+    #trainSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'train')
+    #testSet = torchvision.datasets.ImageNet(FLAGS['imageRoot'], split = 'val')
+    
+    trainSet = timm.data.create_dataset('', root=FLAGS['imageRoot'], split = 'train', batch_size=FLAGS['batch_size'])
+    testSet = timm.data.create_dataset('', root=FLAGS['imageRoot'], split = 'validation', batch_size=FLAGS['batch_size'])
 
     global classes
     classes = {classIndex : className for classIndex, className in enumerate(trainSet.classes)}
