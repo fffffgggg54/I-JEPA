@@ -125,7 +125,7 @@ FLAGS['compile_model'] = False
 
 FLAGS['verbose_debug'] = False
 FLAGS['skip_test_set'] = False
-FLAGS['stepsPerPrintout'] = 50
+FLAGS['stepsPerPrintout'] = 250
 FLAGS['val'] = False
 
 classes = None
