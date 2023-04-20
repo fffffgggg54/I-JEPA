@@ -70,8 +70,8 @@ FLAGS = {}
 FLAGS['rootPath'] = "/media/fredo/SAMSUNG_500GB/imagenet/"
 FLAGS['imageRoot'] = FLAGS['rootPath'] + 'data/'
 
-#FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_base_patch16_224/'
-FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_regnety_800/'
+FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_base_patch16_224/'
+#FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_regnety_800/'
 
 
 # device config
@@ -81,10 +81,10 @@ FLAGS['ngpu'] = torch.cuda.is_available()
 FLAGS['device'] = torch.device("cuda:0" if (torch.cuda.is_available() and FLAGS['ngpu'] > 0) else "mps" if (torch.has_mps == True) else "cpu")
 FLAGS['device2'] = FLAGS['device']
 if(torch.has_mps == True): FLAGS['device2'] = "cpu"
-FLAGS['use_AMP'] = False
+FLAGS['use_AMP'] = True
 FLAGS['use_ddp'] = True
-#FLAGS['use_scaler'] = FLAGS['use_AMP']
-FLAGS['use_scaler'] = False
+FLAGS['use_scaler'] = FLAGS['use_AMP']
+#FLAGS['use_scaler'] = False
 #if(FLAGS['device'].type == 'cuda'): FLAGS['use_sclaer'] = True
 
 # dataloader config
@@ -105,7 +105,7 @@ FLAGS['lr_warmup_epochs'] = 5
 
 FLAGS['weight_decay'] = 1e-2
 
-FLAGS['resume_epoch'] = 25
+FLAGS['resume_epoch'] = 0
 
 FLAGS['finetune'] = False
 
@@ -234,10 +234,10 @@ def modelSetup(classes):
     
     #model = timm.create_model('maxvit_tiny_tf_224.in1k', pretrained=True, num_classes=len(classes))
     #model = timm.create_model('ghostnet_050', pretrained=True, num_classes=len(classes))
-    model = timm.create_model('gernet_l', pretrained=False, num_classes=0, global_pool='', drop_path_rate=0.1)
+    #model = timm.create_model('gernet_l', pretrained=False, num_classes=0, global_pool='', drop_path_rate=0.1)
     #model = timm.create_model('vit_small_resnet26d_224', pretrained=False, num_classes=len(classes), drop_rate = 0., drop_path_rate = 0.1)
     
-    #model = timm.create_model('vit_base_patch16_224', pretrained=False, num_classes=0, drop_rate = 0.0, drop_path_rate = 0.2, global_pool='', class_token=False)
+    model = timm.create_model('vit_base_patch16_224', pretrained=False, num_classes=0, drop_rate = 0.0, drop_path_rate = 0.2, global_pool='', class_token=False)
     model = I_JEPA(model)
     
     
