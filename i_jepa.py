@@ -73,6 +73,7 @@ def generate_random_mask(shape, target_size):
     return mask
     
 # TODO "sample a single block ... with a random scale in the range (0.85,1.0) and unit aspect ratio"
+# TODO is this happening on cpu and in turn bottlenecking gpu computations?
 def get_masks( 
     target_shape,
     num_targets_per_sample=4,
@@ -113,7 +114,6 @@ def get_masks(
     
     return context_mask, target_masks
     
-# FIXME doesn't converge when using autocast
 class I_JEPA(nn.Module):
     def __init__(
         self,
