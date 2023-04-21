@@ -171,14 +171,14 @@ class I_JEPA(nn.Module):
         
         # masking
         target_unmasked = target_unmasked.reshape(B, 1, N, C)
-        target_masks = target_masks.reshape(B, self.num_targets_per_sample, N, 1).to(x.device)
+        target_masks = target_masks.reshape(B, self.num_targets_per_sample, N, 1)
         targets = target_unmasked * target_masks
         
         
         
         #[B, num_targets, N, C]
         
-        context_mask = F.interpolate(context_mask.float().to(x.device), (in_shape[-2], in_shape[-1]))
+        context_mask = F.interpolate(context_mask.float(), (in_shape[-2], in_shape[-1]))
         context_enc_input = x * context_mask
         
         
