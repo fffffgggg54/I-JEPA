@@ -64,10 +64,10 @@ class Predictor(nn.Module):
 #works with 2d shape
 #some performance to be had
 # random selection of k patches instead of 
-def generate_random_mask(shape, target_size):
-    mask = torch.randn(shape).flatten()
+def generate_random_mask(shape, target_size, device):
+    mask = torch.randn(shape, device=device).flatten()
     _, idx = torch.topk(mask, target_size)
-    mask = torch.zeros_like(mask)
+    mask = torch.zeros_like(mask, device=device)
     mask[idx] = 1
     mask = mask.reshape(shape)
     return mask
@@ -81,6 +81,7 @@ def get_masks(
     scale_range=(0.15,0.2),
     aspect_ratio_range=(3./4., 2./1.),
     out_size=None,
+    device="cpu"
 ):
     batch_size = target_shape[0]
     # out_size is the dims of model's final output features
@@ -98,7 +99,7 @@ def get_masks(
             sample_masks=[]
             # sample random tokens
             for mask in range(num_targets_per_sample):
-                sample_masks.append(generate_random_mask(out_size, target_size))
+                sample_masks.append(generate_random_mask(out_size, target_size, device))
             target_masks.append(torch.stack(sample_masks))
         # target masks ends as [B, num_targets_per_sample, *out_size]
         target_masks = torch.stack(target_masks)
@@ -162,7 +163,8 @@ class I_JEPA(nn.Module):
         context_mask, target_masks = get_masks(
             target_unmasked.shape, 
             num_targets_per_sample=self.num_targets_per_sample,
-            target_size = self.target_size
+            target_size = self.target_size,
+            device=x.device
         )
         
         
