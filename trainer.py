@@ -70,9 +70,9 @@ FLAGS = {}
 FLAGS['rootPath'] = "/media/fredo/SAMSUNG_500GB/imagenet/"
 FLAGS['imageRoot'] = FLAGS['rootPath'] + 'data/'
 
-FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_base_patch16_224/'
+#FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_base_patch16_224/'
 #FLAGS['modelDir'] = FLAGS['rootPath'] + 'models/IJEPA_gernet_l/'
-
+FLAGS['modelDir'] = "/media/fredo/Storage3/" + 'IJEPA_base_patch16_224/'
 
 # device config
 
